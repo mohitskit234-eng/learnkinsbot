@@ -23,15 +23,16 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ onShowProgress }) => {
   const [progress, setProgress] = useState<UserProgress>(progressService.getProgress());
   const [showSidebar, setShowSidebar] = useState(false);
   const [conversationHistory, setConversationHistory] = useState<ChatMessage[]>([]);
+  const [userName] = useState(() => localStorage.getItem('learnerbot_username') || 'Learning Champion');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Add welcome message
+    // Personalized welcome message
     const welcomeMessage: Message = {
       id: '1',
       type: 'bot',
-      content: '🎉 Welcome to the most awesome learning adventure ever! I\'m your AI learning buddy, and I\'m super excited to explore the world with you! \n\nWhat makes you curious today? I love talking about science, math, space, animals, technology, and so much more! \n\nReady to start our learning journey? 🚀',
+      content: `🎉 Hey there, ${userName}! Welcome to the most awesome learning adventure ever! I'm your AI learning buddy, and I'm super excited to explore the world with you! \n\nWhat makes you curious today? I love talking about science, math, space, animals, technology, and so much more! \n\nReady to start our learning journey? 🚀`,
       timestamp: new Date(),
       isQuestion: true,
       options: ['Let\'s learn about space! 🌌', 'Show me cool science! 🔬', 'Math can be fun? 🧮', 'Surprise me! ✨'],
@@ -45,7 +46,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ onShowProgress }) => {
       triggerConfetti();
       setProgress(progressService.getProgress());
     }
-  }, []);
+  }, [userName]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -172,7 +173,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ onShowProgress }) => {
               {/* Profile Section */}
               <Card className="p-6 mb-6 text-center">
                 <Avatar type="user" size="lg" />
-                <h3 className="text-xl font-bold text-white mt-4 mb-2">Learning Champion!</h3>
+                <h3 className="text-xl font-bold text-white mt-4 mb-2">{userName}!</h3>
                 <div className="flex items-center justify-center gap-2 text-sm text-gray-300">
                   <Zap className="w-4 h-4 text-yellow-400" />
                   Level {progress.level}
