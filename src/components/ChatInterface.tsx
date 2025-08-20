@@ -65,13 +65,19 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ onShowProgress }) => {
   };
 
   const callApi = async (message: string): Promise<string> => {
-    const response = await apiService.sendMessage(message, conversationHistory);
-    
-    if (response.error) {
-      throw new Error(response.error);
+    try {
+      const response = await apiService.sendMessage(message, conversationHistory);
+      
+      // Don't throw error for API key issues, just return the message
+      if (response.error && !response.error.includes("API key not configured")) {
+        console.warn("API Warning:", response.error);
+      }
+      
+      return response.message;
+    } catch (error) {
+      console.error("API call failed:", error);
+      throw error;
     }
-    
-    return response.message;
   };
 
   const handleSendMessage = async (content: string) => {
